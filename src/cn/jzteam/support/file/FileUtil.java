@@ -93,7 +93,6 @@ public class FileUtil {
         } finally {
             if (bis != null)
                 bis.close();
-
             if (bos != null)
                 bos.close();
         }
