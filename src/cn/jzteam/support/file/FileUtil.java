@@ -11,10 +11,11 @@ import java.io.IOException;
  * 文件操作
  */
 public class FileUtil {
+    
     public static void main(String[] args) {
 
-        rename("D:\\zhujz\\桌面\\test\\post", "Apply", "Material");
-
+        rename("D:\\jzteam\\music\\cache", ".mqcc", ".mp3");
+        System.out.println("结束了");
     }
 
     /**
