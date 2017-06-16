@@ -1,10 +1,9 @@
-package com.liepin.crm.internal.common.util;
+package cn.jzteam.support;
 
+import java.awt.Font;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,26 +19,14 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.liepin.swift.core.exception.BizException;
-import com.liepin.swift.core.log.MonitorLogger;
+import com.sun.rowset.internal.Row;
 
 public class ExcelUtil {
 
     private static final Logger catalinaLog = Logger.getLogger(ExcelUtil.class);
-
-    protected static final MonitorLogger monitorLog = MonitorLogger.getInstance();
 
     private static final String EXCEL_2003 = "xls";
 
@@ -53,17 +40,17 @@ public class ExcelUtil {
      * @param multipartFile
      * @param startRowIndex 数据行（标题行不算），从1计数。
      * @return
-     * @throws BizException
-     * @throws Exception
+     * @throws RuntimeException
+     * @throws RuntimeException
      */
     public static List<Map<String, Object>> processDataFormExcel(MultipartFile multipartFile, int startRowIndex)
-            throws Exception {
+            throws RuntimeException {
         // 校验文件信息
         Map<String, String> result = validateFile(multipartFile);
         if ("0".equals(result.get("code"))) {
-            throw new BizException("", result.get("msg")); // 操作异常
+            throw new RuntimeException("", result.get("msg")); // 操作异常
         } else if ("1".equals(result.get("code"))) {
-            throw new Exception(result.get("msg")); // 系统异常
+            throw new RuntimeException(result.get("msg")); // 系统异常
         }
         List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
         // 获取文件名称
@@ -77,19 +64,19 @@ public class ExcelUtil {
         } else if (fileName.endsWith(EXCEL_2007)) { // 2007版本的EXCEL文件
             workbook = new XSSFWorkbook(input);
         } else {
-            throw new BizException("文件格式不正确");
+            throw new RuntimeException("文件格式不正确");
         }
         // 获取当前Sheet页的工作表【只支持一个Sheet页】
         Sheet sheet = workbook.getSheetAt(0);
         // 获取工作表的总行数
         int rowCount = sheet.getPhysicalNumberOfRows();
         if (startRowIndex > rowCount) {
-            throw new BizException("", "数据的起始行数超过了总行数，请检查！");
+            throw new RuntimeException("", "数据的起始行数超过了总行数，请检查！");
         }
         // 获取标题行
         Row titleRow = sheet.getRow(0);
         if (titleRow == null) {
-            throw new BizException("", "标题行为空，请检查！");
+            throw new RuntimeException("", "标题行为空，请检查！");
         }
 
         // 获取总列数
@@ -142,7 +129,7 @@ public class ExcelUtil {
                 if (!mapValue.isEmpty()) {
                     dataList.add(mapValue);
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 catalinaLog.info(e.getMessage());
             }
         }
@@ -158,14 +145,14 @@ public class ExcelUtil {
      * @param headers ：表格属性列名称的数组
      * @param dataMap ：需要导出的数据
      * @param OutputStream ：导出的Excel文件存储的位置
-     * @throws IOException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
+     * @throws IORuntimeException
+     * @throws InvocationTargetRuntimeException
+     * @throws IllegalAccessRuntimeException
+     * @throws IllegalArgumentRuntimeException
      */
     public static void export2007ExcelByPOI(String title, String[] headers, List<Map<String, Object>> dataMap,
-            OutputStream outputStream) throws IOException, IllegalArgumentException, IllegalAccessException,
-            InvocationTargetException {
+            OutputStream outputStream) throws IORuntimeException, IllegalArgumentRuntimeException,
+            IllegalAccessRuntimeException, InvocationTargetRuntimeException {
         // 声明一个工作簿【SXSSFWorkbook只支持.xlsx格式】
         Workbook workbook = new SXSSFWorkbook(1000);// 内存中只存放1000条
         // 生成一个表格
@@ -347,7 +334,7 @@ public class ExcelUtil {
                     result.put("msg", "上传的文件超过10M,请拆分后上传！");
                 }
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             result.put("code", "1");
             result.put("msg", "系统出现错误，请稍后再试！");
         }
