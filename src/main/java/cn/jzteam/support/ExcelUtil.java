@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.sun.rowset.internal.Row;
@@ -48,7 +49,7 @@ public class ExcelUtil {
         // 校验文件信息
         Map<String, String> result = validateFile(multipartFile);
         if ("0".equals(result.get("code"))) {
-            throw new RuntimeException("", result.get("msg")); // 操作异常
+            throw new RuntimeException(result.get("msg")); // 操作异常
         } else if ("1".equals(result.get("code"))) {
             throw new RuntimeException(result.get("msg")); // 系统异常
         }
@@ -71,12 +72,12 @@ public class ExcelUtil {
         // 获取工作表的总行数
         int rowCount = sheet.getPhysicalNumberOfRows();
         if (startRowIndex > rowCount) {
-            throw new RuntimeException("", "数据的起始行数超过了总行数，请检查！");
+            throw new RuntimeException("数据的起始行数超过了总行数，请检查！");
         }
         // 获取标题行
         Row titleRow = sheet.getRow(0);
         if (titleRow == null) {
-            throw new RuntimeException("", "标题行为空，请检查！");
+            throw new RuntimeException("标题行为空，请检查！");
         }
 
         // 获取总列数
